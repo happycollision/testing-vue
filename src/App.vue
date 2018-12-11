@@ -7,6 +7,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import DataTable from './components/DataTable.vue';
+import '@/assets/main.css';
 import csv from '@/assets/data.csv';
 
 @Component({
