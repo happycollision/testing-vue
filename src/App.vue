@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <DataTable :data="csv" />
+    <DataTable :data="csv"/>
   </div>
 </template>
 
