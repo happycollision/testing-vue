@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <DataTable :data="csv" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import DataTable from './components/DataTable.vue';
+import csv from '@/assets/data.csv';
 
 @Component({
   components: {
-    HelloWorld,
+    DataTable,
   },
+  data: () => ({
+    csv,
+  }),
 })
 export default class App extends Vue {}
 </script>
