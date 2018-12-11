@@ -1,4 +1,5 @@
-export default `ID,Name,Description,Date,Amount
+ /* tslint:disable */
+ export default `ID,Name,Description,Date,Amount
 3471DA17-401F-9633-BF81-4CADA6FD5C79,Kyra Lester,Curabitur dictum. Phasellus in,2017-07-23T04:24:49-07:00,345.54
 9F5C9912-936A-FB85-1EDB-9DA87BE7FF1E,Buckminster Alvarado,"dui, in sodales elit erat vitae risus. Duis a mi",2018-11-08T05:44:15-08:00,677.08
 B743AC82-3613-13A2-2E42-E0C1F5CBF8A6,Athena Smith,massa lobortis ultrices. Vivamus rhoncus.,2018-11-11T06:19:57-08:00,73.67
