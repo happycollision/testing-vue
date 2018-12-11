@@ -2,10 +2,10 @@
   <div class="hello">
     <table>
       <tr>
-        <th v-for="label in tableData.header" :key="label">{{label}}</th>
+        <th v-for="label in tableData.header" :key="label">{{label}}<button class="px-2 py-1 m-1 bg-blue-light rounded text-white">Sort</button></th>
       </tr>
-      <tr v-for="row in tableData.rows" :key="row.id">
-        <td v-for="item in row" :key="item">{{item}}</td>
+      <tr v-for="row in tableData.rows" :key="row.ID">
+        <td v-for="name in tableData.header" :key="name">{{row[name]}}</td>
       </tr>
     </table>
   </div>
@@ -18,7 +18,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class DataTable extends Vue {
   @Prop() private data!: string;
   get tableData() {
-    const [header, ...rows] = this.data.split('\n')
+    const [header, ...tail] = this.data.split('\n')
       .map((line) => line.split(',')
         .reduce((a, c, i) => {
           if (i === 0) { return [c]; }
@@ -34,11 +34,12 @@ export default class DataTable extends Vue {
         }, [] as string[])
         .map((cell) => cell.trim()),
       );
+    const rows = tail.map((r) => {
+      const row: {[s: string]: string} = {};
+      header.map((h, i) => row[h] = r[i]);
+      return row;
+    });
     return {header, rows};
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
