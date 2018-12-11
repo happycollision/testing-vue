@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
+import flushPromises from 'flush-promises';
 import DataTable from '@/components/DataTable.vue';
 
 describe('DataTable.vue', () => {
@@ -37,54 +38,48 @@ describe('DataTable.vue', () => {
   });
 
   describe('sorting', () => {
-    it('string data can be sorted', (done) => {
+    it('string data can be sorted', async () => {
       const data = 'Header 1,Header 2\nb,b\na,a';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
       });
 
       wrapper.find('button').trigger('click');
+      await flushPromises();
 
-      wrapper.vm.$nextTick(() => {
-        const rows = wrapper.findAll('tr');
-        expect(rows.at(1).text()).to.include('aa');
-        expect(rows.at(2).text()).to.include('bb');
-        done();
-      });
+      const rows = wrapper.findAll('tr');
+      expect(rows.at(1).text()).to.include('aa');
+      expect(rows.at(2).text()).to.include('bb');
     });
 
-    it('number data can be sorted', (done) => {
+    it('number data can be sorted', async () => {
       const data = 'Header 1,Header 2\n3,3\n20,20\n1,1';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
       });
 
       wrapper.find('button').trigger('click');
+      await flushPromises();
 
-      wrapper.vm.$nextTick(() => {
-        const rows = wrapper.findAll('tr');
-        expect(rows.at(1).text()).to.include('11');
-        expect(rows.at(2).text()).to.include('33');
-        expect(rows.at(3).text()).to.include('2020');
-        done();
-      });
+      const rows = wrapper.findAll('tr');
+      expect(rows.at(1).text()).to.include('11');
+      expect(rows.at(2).text()).to.include('33');
+      expect(rows.at(3).text()).to.include('2020');
     });
 
-    it('mixed data can be sorted', (done) => {
+    it('mixed data can be sorted', async () => {
       const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
       });
 
       wrapper.find('button').trigger('click');
+      await flushPromises();
 
-      wrapper.vm.$nextTick(() => {
-        const rows = wrapper.findAll('tr');
-        expect(rows.at(1).text()).to.include('11');
-        expect(rows.at(2).text()).to.include('33');
-        expect(rows.at(3).text()).to.include('aa');
-        done();
-      });
+      const rows = wrapper.findAll('tr');
+      expect(rows.at(1).text()).to.include('11');
+      expect(rows.at(2).text()).to.include('33');
+      expect(rows.at(3).text()).to.include('aa');
     });
   });
 });
