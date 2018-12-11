@@ -24,10 +24,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class DataTable extends Vue {
   @Prop() private data!: string;
   private sortOn: null | string = null;
+  private reverse = false;
 
   get sortedRows() {
     if (this.sortOn) {
-      return this.sortRows(this.sortOn);
+      return this.sortRows(this.sortOn, this.reverse);
     } else {
       return this.tableData.rows;
     }
@@ -81,7 +82,7 @@ export default class DataTable extends Vue {
     return { header, rows };
   }
 
-  private sortRows(on: string) {
+  private sortRows(on: string, reverse: boolean) {
     const [...rows] = this.tableData.rows;
     rows.sort((a, b) => {
       const aIsNum = typeof a[on] === 'number';
@@ -100,10 +101,11 @@ export default class DataTable extends Vue {
       }
       return -1;
     });
-    return rows;
+    return reverse ? rows.reverse() : rows;
   }
 
   private handleSort(name: string) {
+    this.reverse = this.sortOn === name && !this.reverse;
     this.sortOn = name;
   }
 }

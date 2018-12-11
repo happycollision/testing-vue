@@ -81,5 +81,41 @@ describe('DataTable.vue', () => {
       expect(rows.at(2).text()).to.include('33');
       expect(rows.at(3).text()).to.include('aa');
     });
+
+    it('can reverse sort', async () => {
+      const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('button').trigger('click');
+      await flushPromises();
+      wrapper.find('button').trigger('click');
+      await flushPromises();
+
+      const rows = wrapper.findAll('tr');
+      expect(rows.at(3).text()).to.include('11');
+      expect(rows.at(2).text()).to.include('33');
+      expect(rows.at(1).text()).to.include('aa');
+    });
+
+    it('can un-reverse sort', async () => {
+      const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('button').trigger('click');
+      await flushPromises();
+      wrapper.find('button').trigger('click');
+      await flushPromises();
+      wrapper.find('button').trigger('click');
+      await flushPromises();
+
+      const rows = wrapper.findAll('tr');
+      expect(rows.at(1).text()).to.include('11');
+      expect(rows.at(2).text()).to.include('33');
+      expect(rows.at(3).text()).to.include('aa');
+    });
   });
 });
