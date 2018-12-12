@@ -9,7 +9,7 @@ describe('DataTable.vue', () => {
     const wrapper = shallowMount(DataTable, {
       propsData: { data },
     });
-    // expect(wrapper.text()).to.include('Header 1');
+    // expect(wrapper.text()).to.include('Header 1'); // first header could be hidden
     expect(wrapper.text()).to.include('Header 2');
     expect(wrapper.text()).to.include('Data 1');
     expect(wrapper.text()).to.include('Data 2');
@@ -22,7 +22,7 @@ describe('DataTable.vue', () => {
     });
     const headerCols = wrapper.findAll('th');
     const cells = wrapper.findAll('td');
-    // expect(headerCols.at(0).text()).to.include('Header 1');
+    // expect(headerCols.at(0).text()).to.include('Header 1'); // first header could be hidden
     expect(headerCols.at(1).text()).to.include('Header 2');
     expect(cells.at(0).text()).to.include('Data 1');
     expect(cells.at(1).text()).to.include('Data 2');
@@ -126,15 +126,60 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper
-        .find('[data-testid="invoke description edit 12345"]')
-        .trigger('click');
+      wrapper.find('[data-testid="12345:description"]').trigger('click');
       await flushPromises();
 
       wrapper.find('[name="[12345]desc"]').setValue('test update');
       wrapper.find('[name="[12345]desc"]').trigger('blur');
 
       expect(wrapper.emitted()['edit-value'][0][0].value).to.eq('test update');
+    });
+
+    it('can select multiple entries', async () => {
+      const data =
+        'ID,Description\n1234,This is the description\n1235,This is the other description';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('[data-testid="select 1234"]').trigger('click');
+      await flushPromises();
+
+      wrapper.find('[data-testid="select 1235"]').trigger('click');
+      await flushPromises();
+
+      expect(wrapper.vm.$data.selected).has.lengthOf(2);
+    });
+
+    it('emits an edit to the descriptions for multiple edits at once', async () => {
+      const data =
+        'ID,Description\n1234,This is the description\n1235,This is the other description\n1236,This is one last description';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('[data-testid="select 1234"]').trigger('click');
+      await flushPromises();
+
+      wrapper.find('[data-testid="select 1235"]').trigger('click');
+      await flushPromises();
+
+      wrapper.find('[name="[1236]desc"]').setValue('test update both');
+      wrapper.find('[name="[1236]desc"]').trigger('blur');
+
+      const calls = wrapper.emitted()['edit-value'];
+      expect(calls).to.have.lengthOf(3);
+
+      const call1 = wrapper.emitted()['edit-value'][0];
+      const call2 = wrapper.emitted()['edit-value'][1];
+      const call3 = wrapper.emitted()['edit-value'][2];
+
+      expect(call1[0].row.ID).to.eq(1236);
+      expect(call2[0].row.ID).to.eq(1234);
+      expect(call3[0].row.ID).to.eq(1235);
+      expect(call1[0].value).to.eq('test update both');
+      expect(call2[0].value).to.eq('test update both');
+      expect(call3[0].value).to.eq('test update both');
     });
   });
 });

@@ -20,30 +20,31 @@
           </button>
         </th>
       </tr>
-      <tr v-for="row in sortedRows" :key="row.ID" class="w-64 m-4 md:m-auto md:table-row">
+      <tr
+        v-for="row in sortedRows"
+        @click="toggleSelected(row)"
+        :key="row.ID"
+        :class="`w-64 m-4 md:m-auto md:table-row ${isSelected(row) ? 'bg-grey-light' : ''}`"
+      >
         <td
           v-for="name in tableData.header"
           :key="name"
-          :class="`block md:p-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'text-grey text-xs hidden' : ''}`"
+          :class="`block md:p-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'hidden' : ''}`"
         >
-          <template v-if="name === 'Description' && editing === row">
-            <input
-              class="w-full"
-              type="text"
-              :name="`[${row.ID}]desc`"
-              :id="`[${row.ID}]desc`"
-              :value="row[name]"
-              @blur="submitEdit($event, row, name)"
-              @focus="$event.target.select()"
-            >
-          </template>
-          <template v-else-if="name === 'Description'">
-            <input
-              class="w-full block cursor-pointer"
-              :data-testid="`invoke description edit ${row.ID}`"
-              v-on:click.prevent="edit(row)"
-              :value="row[name]"
-            >
+          <template v-if="name === 'Description'">
+            <form @submit.prevent="submitForm($event, row, name)">
+              <input
+                class="w-full block cursor-pointer"
+                type="text"
+                :name="`[${row.ID}]desc`"
+                :id="`[${row.ID}]desc`"
+                :value="isSelected(row) && editing && editing !== row ? 'editing multiple...' : row[name]"
+                :data-testid="`${row.ID}:description`"
+                @blur="submitEdit($event, row, name)"
+                @click.stop.prevent="edit(row)"
+                @focus="edit(row); $event.target.select()"
+              >
+            </form>
           </template>
           <template v-else-if="name === 'Amount'">
             <span
@@ -53,9 +54,18 @@
           <template v-else-if="name === 'Date'">
             <div class="text-right">{{formatDate(row[name])}}</div>
           </template>
-          <template v-else>
-            <span :class="`${name === 'ID' ? 'ellipsis w-24' : ''}`">{{row[name]}}</span>
+          <template v-else-if="name === 'ID'">
+            <div class="ellipsis w-24 text-grey-dark text-xs">
+              <input
+                class="text-base"
+                :data-testid="`select ${row.ID}`"
+                type="checkbox"
+                :checked="isSelected(row)"
+              >
+              {{row[name]}}
+            </div>
           </template>
+          <template v-else>{{row[name]}}</template>
         </td>
       </tr>
     </table>
@@ -79,6 +89,7 @@ export default class DataTable extends Vue {
   private sortOn: null | string = null;
   private reverse = false;
   private editing: Row | null = null;
+  private selected: string[] = [];
 
   get sortedRows() {
     if (this.sortOn) {
@@ -150,6 +161,41 @@ export default class DataTable extends Vue {
     };
     if (payload.value !== row[name]) {
       this.$emit('edit-value', payload);
+      const allOthers = this.selected
+        .concat([])
+        .filter((id) => id !== payload.row.ID);
+      allOthers.forEach((id) => {
+        const newPayload = { ...payload };
+        newPayload.row = this.tableData.rows.find((r) => r.ID === id) as Row;
+        this.$emit('edit-value', newPayload);
+      });
+    }
+  }
+
+  private submitForm(
+    ev: Event & { currentTarget: HTMLFormElement },
+    row: Row,
+    name: string,
+  ) {
+    const fakeEv = {
+      ...ev,
+      currentTarget: ev.currentTarget.querySelector(
+        'input',
+      ) as HTMLInputElement,
+    };
+    this.submitEdit(fakeEv, row, name);
+  }
+
+  private isSelected(row: Row) {
+    return this.selected.indexOf(row.ID as string) > -1;
+  }
+
+  private toggleSelected(row: Row) {
+    const index = this.selected.indexOf(row.ID as string);
+    if (index === -1) {
+      this.selected.push(row.ID as string);
+    } else {
+      this.selected.splice(index, 1);
     }
   }
 
