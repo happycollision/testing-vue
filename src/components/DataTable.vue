@@ -1,17 +1,33 @@
 <template>
   <div class="hello">
-    <table>
-      <tr>
-        <th v-for="label in tableData.header" :key="label">
-          {{label}}
+    <table class="border-collapse flex flex-wrap justify-around md:table">
+      <tr class="block md:table-row flex-w-full" style="flex-basis: 100%">
+        <th
+          v-for="(label, index) in tableData.header"
+          :key="label"
+          :class="`inline-block md:border-b md:border-black md:table-cell ${index === 0 ? 'hidden' : ''}`"
+        >
           <button
-            class="px-2 py-1 m-1 bg-blue-light rounded text-white"
+            v-if="index != 0"
+            :class="`px-2 py-1 m-1 rounded text-white ${sortOn === label ? 'bg-blue' : 'bg-blue-light'}`"
             v-on:click="handleSort(label)"
-          >Sort</button>
+          >
+            <span class="w-1 inline-block"></span>
+            {{label}}
+            <span
+              class="w-1 inline-block"
+            >{{sortOn === label ? reverse ? '&#8595;' : '&#8593;' : ''}}</span>
+          </button>
         </th>
       </tr>
-      <tr v-for="row in sortedRows" :key="row.ID">
-        <td v-for="name in tableData.header" :key="name">{{row[name]}}</td>
+      <tr v-for="row in sortedRows" :key="row.ID" class="w-64 m-4 md:m-auto md:table-row">
+        <td
+          v-for="name in tableData.header"
+          :key="name"
+          :class="`block md:py-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'text-grey text-xs hidden' : ''}`"
+        >
+          <span :class="`${name === 'ID' ? 'ellipsis w-24' : ''}`">{{row[name]}}</span>
+        </td>
       </tr>
     </table>
   </div>
@@ -110,3 +126,27 @@ export default class DataTable extends Vue {
   }
 }
 </script>
+
+<style scoped>
+td {
+  text-align: left;
+}
+
+td:nth-child(5) {
+  width: 12rem;
+  margin: auto;
+  text-align: center;
+}
+
+td:nth-child(1) {
+  width: 6rem;
+}
+
+.ellipsis {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /** IE6+, Firefox 7+, Opera 11+, Chrome, Safari **/
+  -o-text-overflow: ellipsis;
+}
+</style>
