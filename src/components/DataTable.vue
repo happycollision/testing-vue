@@ -19,7 +19,7 @@
         <th
           v-for="(label, index) in tableData.header"
           :key="label"
-          :class="`inline-block md:border-b md:border-black md:table-cell ${index === 0 ? 'hidden' : ''}`"
+          class="inline-block md:border-b md:border-black md:table-cell"
         >
           <button
             v-if="index != 0"
@@ -33,6 +33,15 @@
               class="w-1 inline-block"
             >{{sortOn === label ? reverse ? '&#8595;' : '&#8593;' : ''}}</span>
           </button>
+          <input
+            v-else
+            type="checkbox"
+            name="allChecked"
+            id
+            :checked="allSelected"
+            class="ml-0 mr-auto"
+            @click="allSelected ? deselectAll() : selectAll()"
+          >
         </th>
       </tr>
       <tr
@@ -115,6 +124,14 @@ export default class DataTable extends Vue {
     }
   }
 
+  get allSelected(): boolean {
+    const allVisibleIds = this.tableData.rows.map((r) => r.ID as string);
+    return allVisibleIds.reduce(
+      (a, c) => (!a ? a : this.selected.includes(c)),
+      true,
+    );
+  }
+
   get tableData() {
     if (this.filterText === '') {
       return this.allTableData;
@@ -185,6 +202,18 @@ export default class DataTable extends Vue {
       return row;
     });
     return { header, rows };
+  }
+
+  private selectAll() {
+    this.tableData.rows.forEach((row) =>
+      !this.isSelected(row) ? this.toggleSelected(row) : null,
+    );
+  }
+
+  private deselectAll() {
+    this.tableData.rows.forEach((row) =>
+      !this.isSelected(row) ? null : this.toggleSelected(row),
+    );
   }
 
   private submitEdit(
