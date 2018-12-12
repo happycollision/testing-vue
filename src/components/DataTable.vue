@@ -55,7 +55,7 @@
             >{{formatCurrency(row[name])}}</span>
           </template>
           <template v-else-if="name === 'Date'">
-            <div class="text-right">{{formatDate(row[name])}}</div>
+            <div class="text-right">{{row[name]}}</div>
           </template>
           <template v-else-if="name === 'ID'">
             <div class="ellipsis w-24 text-grey-dark text-xs">
@@ -169,6 +169,7 @@ export default class DataTable extends Vue {
     const rows = tail.map((r) => {
       const row: Row = {};
       header.map((h, i) => (row[h] = r[i]));
+      row.Date = this.formatDate(row.Date as string);
       return row;
     });
     return { header, rows };
