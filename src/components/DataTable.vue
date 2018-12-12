@@ -35,6 +35,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+type Row = { [s: string]: string | number };
 
 @Component
 export default class DataTable extends Vue {
@@ -50,7 +51,7 @@ export default class DataTable extends Vue {
     }
   }
 
-  get tableData() {
+  get tableData(): { header: string[]; rows: Row[] } {
     const convertIfNumber = (str: string) => {
       const asNum = parseFloat(str);
       const reconverted = asNum.toString();
@@ -59,7 +60,7 @@ export default class DataTable extends Vue {
       }
       return str;
     };
-    const [header, ...tail] = this.data.split('\n').map((line) =>
+    const [head, ...tail] = this.data.split('\n').map((line) =>
       line
         .split(',')
         .reduce(
@@ -90,8 +91,9 @@ export default class DataTable extends Vue {
         .map((cell) => cell.trim())
         .map((cell) => convertIfNumber(cell)),
     );
+    const header = head.map((s) => s.toString());
     const rows = tail.map((r) => {
-      const row: { [s: string]: string | number } = {};
+      const row: Row = {};
       header.map((h, i) => (row[h] = r[i]));
       return row;
     });
