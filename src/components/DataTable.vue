@@ -24,7 +24,7 @@
         <td
           v-for="name in tableData.header"
           :key="name"
-          :class="`block md:py-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'text-grey text-xs hidden' : ''}`"
+          :class="`block md:p-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'text-grey text-xs hidden' : ''}`"
         >
           <template v-if="name === 'Description' && editing === row">
             <input
@@ -44,6 +44,14 @@
               v-on:click.prevent="edit(row)"
               :value="row[name]"
             >
+          </template>
+          <template v-else-if="name === 'Amount'">
+            <span
+              :class="`${parseFloat(row[name]) < 0 ? 'text-red' : ''}`"
+            >{{formatCurrency(row[name])}}</span>
+          </template>
+          <template v-else-if="name === 'Date'">
+            <div class="text-right">{{formatDate(row[name])}}</div>
           </template>
           <template v-else>
             <span :class="`${name === 'ID' ? 'ellipsis w-24' : ''}`">{{row[name]}}</span>
@@ -155,6 +163,20 @@ export default class DataTable extends Vue {
         input.focus();
       }
     });
+  }
+
+  private formatCurrency(input: string | number) {
+    if (typeof input === 'string') {
+      input = parseFloat(input);
+    }
+    return input.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  }
+
+  private formatDate(input: string) {
+    return new Date(input).toLocaleString();
   }
 
   private sortRows(on: string, reverse: boolean) {
