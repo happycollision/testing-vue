@@ -119,6 +119,23 @@ describe('DataTable.vue', () => {
     });
   });
 
+  describe('filtering', () => {
+    it('can filter on a search term', async () => {
+      const data =
+        'ID,Heading\n12345,This is the description\n12346,Another desc';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('[data-testid="search"]').setValue('another');
+      wrapper.find('[data-testid="search"]').trigger('input');
+
+      const rows = wrapper.findAll('tr');
+      expect(rows).to.have.lengthOf(2);
+      expect(wrapper.text()).to.include('Another');
+    });
+  });
+
   describe('editing descriptions', () => {
     it('emits an edit to the description', async () => {
       const data = 'ID,Description\n12345,This is the description';

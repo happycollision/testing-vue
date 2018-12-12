@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+    <div>
+      <input data-testid="search" @input="filter($event)" type="text" value placeholder="search">
+    </div>
     <table class="border-collapse flex flex-wrap justify-around md:table w-full">
       <tr class="block md:table-row flex-w-full" style="flex-basis: 100%">
         <th
@@ -90,6 +93,7 @@ export default class DataTable extends Vue {
   private reverse = false;
   private editing: Row | null = null;
   private selected: string[] = [];
+  private filterText = '';
 
   get sortedRows() {
     if (this.sortOn) {
@@ -99,7 +103,29 @@ export default class DataTable extends Vue {
     }
   }
 
-  get tableData(): { header: string[]; rows: Row[] } {
+  get tableData() {
+    if (this.filterText === '') {
+      return this.allTableData;
+    } else {
+      const { header, rows } = this.allTableData;
+      const filteredRows = rows.filter((row) =>
+        Object.keys(row).reduce(
+          (a, c) =>
+            a
+              ? a
+              : row[c]
+                  .toString()
+                  .toLowerCase()
+                  .includes(this.filterText.toLowerCase()),
+          false,
+        ),
+      );
+
+      return { header, rows: filteredRows };
+    }
+  }
+
+  get allTableData(): { header: string[]; rows: Row[] } {
     const convertIfNumber = (str: string) => {
       const asNum = parseFloat(str);
       const reconverted = asNum.toString();
@@ -223,6 +249,10 @@ export default class DataTable extends Vue {
 
   private formatDate(input: string) {
     return new Date(input).toLocaleString();
+  }
+
+  private filter(ev: Event & { currentTarget: HTMLInputElement }) {
+    this.filterText = ev.currentTarget.value;
   }
 
   private sortRows(on: string, reverse: boolean) {
