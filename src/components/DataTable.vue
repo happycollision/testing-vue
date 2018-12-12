@@ -202,7 +202,12 @@ export default class DataTable extends Vue {
   }
 
   private handleSort(name: string) {
-    this.reverse = this.sortOn === name && !this.reverse;
+    if (this.sortOn === name && this.reverse) {
+      this.sortOn = null;
+      this.reverse = false;
+      return;
+    }
+    this.reverse = this.sortOn === name;
     this.sortOn = name;
   }
 }

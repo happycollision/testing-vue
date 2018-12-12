@@ -67,7 +67,7 @@ describe('DataTable.vue', () => {
       expect(rows.at(3).text()).to.include('2020');
     });
 
-    it('mixed data can be sorted', async () => {
+    it('mixed data can be sorted on first click', async () => {
       const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
@@ -82,7 +82,7 @@ describe('DataTable.vue', () => {
       expect(rows.at(3).text()).to.include('aa');
     });
 
-    it('can reverse sort', async () => {
+    it('can reverse sort on second click', async () => {
       const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
@@ -99,7 +99,7 @@ describe('DataTable.vue', () => {
       expect(rows.at(1).text()).to.include('aa');
     });
 
-    it('can un-reverse sort', async () => {
+    it('can un-sort on third click', async () => {
       const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
         propsData: { data },
@@ -113,9 +113,9 @@ describe('DataTable.vue', () => {
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
-      expect(rows.at(1).text()).to.include('11');
-      expect(rows.at(2).text()).to.include('33');
-      expect(rows.at(3).text()).to.include('aa');
+      expect(rows.at(3).text()).to.include('11');
+      expect(rows.at(1).text()).to.include('33');
+      expect(rows.at(2).text()).to.include('aa');
     });
   });
 
