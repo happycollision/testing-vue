@@ -1,7 +1,18 @@
 <template>
   <div class="hello">
     <div>
-      <input data-testid="search" @input="filter($event)" type="text" value placeholder="search">
+      <input
+        class="bg-grey-lighter p-2 rounded w-64"
+        data-testid="search"
+        type="text"
+        v-model="filterText"
+        placeholder="search"
+      >
+      <button
+        data-testid="clear search"
+        class="bg-blue-light text-white px-2 py-1 ml-6 rounded"
+        @click="filterText = ''"
+      >clear</button>
     </div>
     <table class="border-collapse flex flex-wrap justify-around md:table w-full">
       <tr class="block md:table-row flex-w-full" style="flex-basis: 100%">
@@ -12,6 +23,7 @@
         >
           <button
             v-if="index != 0"
+            data-testid="sort"
             :class="`px-2 py-1 m-1 rounded text-white ${sortOn === label ? 'bg-blue' : 'bg-blue-light'}`"
             v-on:click="handleSort(label)"
           >

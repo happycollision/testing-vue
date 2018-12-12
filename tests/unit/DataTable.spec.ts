@@ -44,7 +44,7 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
@@ -58,7 +58,7 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
@@ -73,7 +73,7 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
@@ -88,9 +88,9 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
@@ -105,11 +105,11 @@ describe('DataTable.vue', () => {
         propsData: { data },
       });
 
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
-      wrapper.find('button').trigger('click');
+      wrapper.find('[data-testid="sort"]').trigger('click');
       await flushPromises();
 
       const rows = wrapper.findAll('tr');
@@ -133,6 +133,22 @@ describe('DataTable.vue', () => {
       const rows = wrapper.findAll('tr');
       expect(rows).to.have.lengthOf(2);
       expect(wrapper.text()).to.include('Another');
+    });
+
+    it('can clear a filter', async () => {
+      const data =
+        'ID,Heading\n12345,This is the description\n12346,Another desc';
+      const wrapper = shallowMount(DataTable, {
+        propsData: { data },
+      });
+
+      wrapper.find('[data-testid="search"]').setValue('another');
+      wrapper.find('[data-testid="search"]').trigger('input');
+
+      wrapper.find('[data-testid="clear search"]').trigger('click');
+
+      const rows = wrapper.findAll('tr');
+      expect(rows).to.have.lengthOf(3);
     });
   });
 
