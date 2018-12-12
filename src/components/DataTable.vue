@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <table class="border-collapse flex flex-wrap justify-around md:table">
+    <table class="border-collapse flex flex-wrap justify-around md:table w-full">
       <tr class="block md:table-row flex-w-full" style="flex-basis: 100%">
         <th
           v-for="(label, index) in tableData.header"
@@ -26,7 +26,28 @@
           :key="name"
           :class="`block md:py-4 md:border-t md:border-black md:table-cell ${name === 'ID' ? 'text-grey text-xs hidden' : ''}`"
         >
-          <span :class="`${name === 'ID' ? 'ellipsis w-24' : ''}`">{{row[name]}}</span>
+          <template v-if="name === 'Description' && editing === row">
+            <input
+              class="w-full"
+              type="text"
+              :name="`[${row.ID}]desc`"
+              :id="`[${row.ID}]desc`"
+              :value="row[name]"
+              @blur="submitEdit($event, row, name)"
+              @focus="$event.target.select()"
+            >
+          </template>
+          <template v-else-if="name === 'Description'">
+            <input
+              class="w-full block cursor-pointer"
+              :data-testid="`invoke description edit ${row.ID}`"
+              v-on:click.prevent="edit(row)"
+              :value="row[name]"
+            >
+          </template>
+          <template v-else>
+            <span :class="`${name === 'ID' ? 'ellipsis w-24' : ''}`">{{row[name]}}</span>
+          </template>
         </td>
       </tr>
     </table>
@@ -35,13 +56,21 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-type Row = { [s: string]: string | number };
+export interface Row {
+  [s: string]: string | number;
+}
+export interface EditEvent {
+  row: Row;
+  column: string;
+  value: string | number;
+}
 
 @Component
 export default class DataTable extends Vue {
   @Prop() private data!: string;
   private sortOn: null | string = null;
   private reverse = false;
+  private editing: Row | null = null;
 
   get sortedRows() {
     if (this.sortOn) {
@@ -100,6 +129,34 @@ export default class DataTable extends Vue {
     return { header, rows };
   }
 
+  private submitEdit(
+    ev: Event & { currentTarget: HTMLInputElement },
+    row: Row,
+    name: string,
+  ) {
+    this.editing = null;
+    const payload: EditEvent = {
+      value: ev.currentTarget.value,
+      row,
+      column: name,
+    };
+    if (payload.value !== row[name]) {
+      this.$emit('edit-value', payload);
+    }
+  }
+
+  private edit(row: Row) {
+    this.editing = row;
+    this.$nextTick(() => {
+      const input: HTMLInputElement | null = this.$el.querySelector(
+        `[name="[${row.ID}]desc"]`,
+      );
+      if (input) {
+        input.focus();
+      }
+    });
+  }
+
   private sortRows(on: string, reverse: boolean) {
     const [...rows] = this.tableData.rows;
     rows.sort((a, b) => {
@@ -134,14 +191,22 @@ td {
   text-align: left;
 }
 
+td:nth-child(1) {
+  width: 6rem;
+}
+
+td:nth-child(2) {
+  width: 12rem;
+}
+
+td:nth-child(4) {
+  width: 14rem;
+}
+
 td:nth-child(5) {
   width: 12rem;
   margin: auto;
   text-align: center;
-}
-
-td:nth-child(1) {
-  width: 6rem;
 }
 
 .ellipsis {
