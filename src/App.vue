@@ -2,7 +2,7 @@
   <div id="app" class="p-1">
     <div class="max-w-md text-left m-auto p-2">
       <h1 class="text-center">Testing Vue</h1>
-      <p>This is my first attempt at using Vue at all. I like the tools that Vue's CLI provides though they actually seemed a little buggy at times (often a simple stop and restart did the trick).</p>
+      <p>This is my first attempt at using Vue at all. You can read my thoughts about building this project at its <a href="https://github.com/happycollision/testing-vue/">Github repo</a>.</p>
       <details>
         <summary class="cursor-pointer">Instructions</summary>
         <p>You can tab through the interactable fields below, or click.</p>
