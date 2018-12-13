@@ -21,9 +21,19 @@ The first thing I did was add the CSV string to a TS file in my project. Then it
 
 The DataTable component itself takes a "data down, actions up" approach to the manipulation. The data is displayed as is and any mutation is actually handled elsewhere via catching the component's `$emit` calls. This keeps the component a little more generic. However, this component should not be considered all that generic (see the ["Should be more generic"](#should-be-more-generic) section of the Retrospective below for the reason why).
 
-Styling inside the component is *mostly* handled through functional CSS provided by Tailwind.css. It is a fantastic project and has helped me immensely in all of my prototyping projects lately. This does not demonstrate my knowledge of CSS files directly, but you cannot really use a functional CSS approach without knowing what styles the classes invoke anyway. This is a tradeoff I was willing to make, and I doubt would put my knowledge of CSS in question.
+Styling inside the component is _mostly_ handled through functional CSS provided by Tailwind.css. It is a fantastic project and has helped me immensely in all of my prototyping projects lately. This does not demonstrate my knowledge of CSS files directly, but you cannot really use a functional CSS approach without knowing what styles the classes invoke anyway. This is a tradeoff I was willing to make, and I doubt would put my knowledge of CSS in question.
 
 However, I did use a **brand new css property** that I didn't know existed for this project. That actually was added to the bottom of the DataTable component as a style rule: `text-overflow: ellipsis`. I didn't know this existed before this project, and it allowed me to give a little extra room for more important elements in the table. (I assumed for this project that the ID field is not important information for a theoretical end user.)
+
+## Deployment Method
+
+As stated, I wanted to use Github Pages from the start. I have created many one-off deployment scripts for other projects in the past, but my favorites have been simple shell scripts. This particular one (called simply `deploy` in the root directory of this repo) was borrowed from a Jekyll project I maintain. Some slight alterations and it is good to go.
+
+Since I am the one doing the deployment, and I know that I'll have access to a terminal and bash, a simple bash script will do. The script runs `npm run build` first. That step includes a patch I built for the seemingly broken `vue.config.js` options. It is housed in the `npm-scripts` folder and is run automatically after `build`.
+
+Next the shell script checks out a new branch, wipes out all non-essential files, and pushes the built files up to Github.
+
+I don't yet know much about publishing Vue components as standalone packages on NPM as I have done with Angular, Ember, and some simple utilities, so I left it as is. In the future I may explore publishing this component if it ever becomes robust and generic enough to be useful.
 
 ## Retrospective
 
@@ -33,7 +43,7 @@ This project had no time limit, however, my life still needed to go on during it
 
 I am happy with the tradeoff, though, because it is important for me to know a bit about Vue as a developer. The downside is that I finally have to simply call it quits today. There is more I would do to add some fit and finish to the whole thing if I was working in another framework, but I cannot devote any more time to this project.
 
-Obviously, if my place of employment actually used Vue, I could easily justify spending more time learning about it. As it stands, I have learned what I need to consider myself *familiar* with Vue and some of its conventions.
+Obviously, if my place of employment actually used Vue, I could easily justify spending more time learning about it. As it stands, I have learned what I need to consider myself _familiar_ with Vue and some of its conventions.
 
 ### Next steps (or what I'd change if I had more time)
 
@@ -51,7 +61,7 @@ This, I am sure, would not be a time consuming addition to make, but you have to
 
 #### Responsive design
 
-Though all the necessary data is viewable, and all actions are still available at smaller sizes, the *look* of the UI at smaller sizes leaves a lot to be desired. This comes down to, as always, time. I know how to go about working with the css to change things, but I don't currently have the time to do so.
+Though all the necessary data is viewable, and all actions are still available at smaller sizes, the _look_ of the UI at smaller sizes leaves a lot to be desired. This comes down to, as always, time. I know how to go about working with the css to change things, but I don't currently have the time to do so.
 
 #### Functional CSS -> BEM
 
@@ -73,7 +83,7 @@ Right after that, I'd think about adding an undo button or some other way of und
 
 Currently, editing multiple descriptions at once is not presented in the most ideal way. There are little hints that the action you are taking will affect more than just the field you are in, but it is not as good as it could be. Perhaps hiding all non-selected fields when editing, and showing the edits propagate across all the fields in real time would be better.
 
-Ultimately, allowing the user to enter a multi-edit mode where there are many strategies for editing multiple selections would be good. Should we *append* to all? Should we *replace* all? Etc.
+Ultimately, allowing the user to enter a multi-edit mode where there are many strategies for editing multiple selections would be good. Should we _append_ to all? Should we _replace_ all? Etc.
 
 #### Expanded Filtering
 
@@ -85,7 +95,7 @@ The project I was building this component for had specific requirements. My limi
 
 Parts of the component are fairly generic. For example: the component itself used to do the CSV conversion, but now, it just expects the data in a way that makes sense for tables. This means that a consumer can simply shape the data in JS and feed it to the component.
 
-Other things, however would fall apart if the component did not get the exact data being passed in. For example, I chose to treat the ID column differently than the other columns in the data set. This decision should not be made at the component level. Instead I should expose the *option* to display certain fields in certain ways.
+Other things, however would fall apart if the component did not get the exact data being passed in. For example, I chose to treat the ID column differently than the other columns in the data set. This decision should not be made at the component level. Instead I should expose the _option_ to display certain fields in certain ways.
 
 Additionally, It would be nice to allow a consumer to pass in options and functions related to search/filtering and formatting with each column. Numbers are automatically displayed as red if they are negative, for example. But you may not want that everywhere. It would be best to override that if needed.
 
@@ -99,7 +109,7 @@ Specifically, it seems there are multiple ways to declare things like props and 
 
 I do not know enough about Vue yet to understand where it shines versus the other libraries/frameworks I use more regularly, but it is quite nice and I'll be interested to see what the Vue team continues to do in the future.
 
----------
+---
 
 The rest below was generated by Vue's CLI.
 
