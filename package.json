@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "postbuild": "ts-node --skip-project npm-scripts/finish-build.ts",
     "lint": "vue-cli-service lint",
     "test": "npm run test:unit -- --watch",
     "test:unit": "vue-cli-service test:unit"
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/chai": "^4.1.0",
     "@types/mocha": "^5.2.4",
+    "@types/node": "^10.12.15",
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-plugin-typescript": "^3.1.1",
     "@vue/cli-plugin-unit-mocha": "^3.1.1",
@@ -29,6 +31,7 @@
     "lint-staged": "^7.2.2",
     "prettier": "^1.15.3",
     "tailwindcss": "^0.7.2",
+    "ts-node": "^7.0.1",
     "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.0.0",
     "vue-template-compiler": "^2.5.17"
