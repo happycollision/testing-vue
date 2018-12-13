@@ -5,9 +5,11 @@ import DataTable from '@/components/DataTable.vue';
 
 describe('DataTable.vue', () => {
   it('shows the headers and data', () => {
-    const data = 'Header 1,Header 2\nData 1, Data 2';
     const wrapper = shallowMount(DataTable, {
-      propsData: { data },
+      propsData: {
+        header: ['Header 1', 'Header 2'],
+        rows: [{ 'Header 1': 'Data 1', 'Header 2': 'Data 2' }],
+      },
     });
     // expect(wrapper.text()).to.include('Header 1'); // first header could be hidden
     expect(wrapper.text()).to.include('Header 2');
@@ -16,9 +18,11 @@ describe('DataTable.vue', () => {
   });
 
   it('data is in a proper table', () => {
-    const data = 'Header 1,Header 2\nData 1, Data 2';
     const wrapper = shallowMount(DataTable, {
-      propsData: { data },
+      propsData: {
+        header: ['Header 1', 'Header 2'],
+        rows: [{ 'Header 1': 'Data 1', 'Header 2': 'Data 2' }],
+      },
     });
     const headerCols = wrapper.findAll('th');
     const cells = wrapper.findAll('td');
@@ -28,20 +32,16 @@ describe('DataTable.vue', () => {
     expect(cells.at(1).text()).to.include('Data 2');
   });
 
-  it('data is properly escaped', () => {
-    const data = 'Header 1,Header 2\n"Data 1 with, quotes", Data 2';
-    const wrapper = shallowMount(DataTable, {
-      propsData: { data },
-    });
-    const cells = wrapper.findAll('td');
-    expect(cells.at(0).text()).to.include('Data 1 with, quotes');
-  });
-
   describe('sorting', () => {
     it('string data can be sorted', async () => {
-      const data = 'Header 1,Header 2\nb,b\na,a';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['Header 1', 'Header 2'],
+          rows: [
+            { 'Header 1': 'b', 'Header 2': 'b' },
+            { 'Header 1': 'a', 'Header 2': 'a' },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="sort"]').trigger('click');
@@ -53,9 +53,15 @@ describe('DataTable.vue', () => {
     });
 
     it('number data can be sorted', async () => {
-      const data = 'Header 1,Header 2\n3,3\n20,20\n1,1';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['Header 1', 'Header 2'],
+          rows: [
+            { 'Header 1': 3, 'Header 2': 3 },
+            { 'Header 1': 20, 'Header 2': 20 },
+            { 'Header 1': 1, 'Header 2': 1 },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="sort"]').trigger('click');
@@ -68,9 +74,15 @@ describe('DataTable.vue', () => {
     });
 
     it('mixed data can be sorted on first click', async () => {
-      const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['Header 1', 'Header 2'],
+          rows: [
+            { 'Header 1': 3, 'Header 2': 3 },
+            { 'Header 1': 'a', 'Header 2': 'a' },
+            { 'Header 1': 1, 'Header 2': 1 },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="sort"]').trigger('click');
@@ -83,9 +95,15 @@ describe('DataTable.vue', () => {
     });
 
     it('can reverse sort on second click', async () => {
-      const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['Header 1', 'Header 2'],
+          rows: [
+            { 'Header 1': 3, 'Header 2': 3 },
+            { 'Header 1': 'a', 'Header 2': 'a' },
+            { 'Header 1': 1, 'Header 2': 1 },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="sort"]').trigger('click');
@@ -100,9 +118,15 @@ describe('DataTable.vue', () => {
     });
 
     it('can un-sort on third click', async () => {
-      const data = 'Header 1,Header 2\n3,3\na,a\n1,1';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['Header 1', 'Header 2'],
+          rows: [
+            { 'Header 1': 3, 'Header 2': 3 },
+            { 'Header 1': 'a', 'Header 2': 'a' },
+            { 'Header 1': 1, 'Header 2': 1 },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="sort"]').trigger('click');
@@ -121,10 +145,14 @@ describe('DataTable.vue', () => {
 
   describe('filtering', () => {
     it('can filter on a search term', async () => {
-      const data =
-        'ID,Heading\n12345,This is the description\n12346,Another desc';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['ID', 'Heading'],
+          rows: [
+            { ID: 12345, Heading: 'This is the description' },
+            { ID: 12346, Heading: 'Another desc' },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="search"]').setValue('another');
@@ -136,12 +164,15 @@ describe('DataTable.vue', () => {
     });
 
     it('can clear a filter', async () => {
-      const data =
-        'ID,Heading\n12345,This is the description\n12346,Another desc';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['ID', 'Heading'],
+          rows: [
+            { ID: 12345, Heading: 'This is the description' },
+            { ID: 12346, Heading: 'Another desc' },
+          ],
+        },
       });
-
       wrapper.find('[data-testid="search"]').setValue('another');
       wrapper.find('[data-testid="search"]').trigger('input');
 
@@ -154,9 +185,11 @@ describe('DataTable.vue', () => {
 
   describe('editing descriptions', () => {
     it('emits an edit to the description', async () => {
-      const data = 'ID,Description\n12345,This is the description';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['ID', 'Description'],
+          rows: [{ ID: 12345, Description: 'This is the description' }],
+        },
       });
 
       wrapper.find('[data-testid="12345:description"]').trigger('click');
@@ -169,10 +202,14 @@ describe('DataTable.vue', () => {
     });
 
     it('can select multiple entries', async () => {
-      const data =
-        'ID,Description\n1234,This is the description\n1235,This is the other description';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['ID', 'Description'],
+          rows: [
+            { ID: 1234, Description: 'This is the description' },
+            { ID: 1235, Description: 'This is the other description' },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="select 1234"]').trigger('click');
@@ -185,10 +222,15 @@ describe('DataTable.vue', () => {
     });
 
     it('emits an edit to the descriptions for multiple edits at once', async () => {
-      const data =
-        'ID,Description\n1234,This is the description\n1235,This is the other description\n1236,This is one last description';
       const wrapper = shallowMount(DataTable, {
-        propsData: { data },
+        propsData: {
+          header: ['ID', 'Description'],
+          rows: [
+            { ID: 1234, Description: 'This is the description' },
+            { ID: 1235, Description: 'This is the other description' },
+            { ID: 1236, Description: 'This is one last description' },
+          ],
+        },
       });
 
       wrapper.find('[data-testid="select 1234"]').trigger('click');

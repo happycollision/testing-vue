@@ -98,18 +98,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-export interface Row {
-  [s: string]: string | number;
-}
-export interface EditEvent {
-  row: Row;
-  column: string;
-  value: string | number;
-}
+import { Row, EditEvent } from '../types/table-types';
 
 @Component
 export default class DataTable extends Vue {
-  @Prop() private data!: string;
+  @Prop() private header!: string[];
+  @Prop() private rows!: Row[];
+
   private sortOn: null | string = null;
   private reverse = false;
   private editing: Row | null = null;
@@ -155,53 +150,7 @@ export default class DataTable extends Vue {
   }
 
   get allTableData(): { header: string[]; rows: Row[] } {
-    const convertIfNumber = (str: string) => {
-      const asNum = parseFloat(str);
-      const reconverted = asNum.toString();
-      if (reconverted === str) {
-        return asNum;
-      }
-      return str;
-    };
-    const [head, ...tail] = this.data.split('\n').map((line) =>
-      line
-        .split(',')
-        .reduce(
-          (a, c, i) => {
-            if (i === 0) {
-              return [c];
-            }
-            const aIndex = a.length - 1;
-            const last = a[aIndex];
-            const hadOpener = /^\s*"/.test(last);
-            const hasCloser = /"\s*$/.test(c);
-            if (hadOpener) {
-              a[aIndex] = `${last},${c}`;
-            }
-            if (hadOpener && hasCloser) {
-              a[aIndex] = a[aIndex].trim().substring(1, a[aIndex].length - 1);
-            }
-            if (!hadOpener && hasCloser) {
-              throw new Error('closing quote found without opening quote');
-            }
-            if (!hadOpener && !hasCloser) {
-              a.push(c);
-            }
-            return a;
-          },
-          [] as string[],
-        )
-        .map((cell) => cell.trim())
-        .map((cell) => convertIfNumber(cell)),
-    );
-    const header = head.map((s) => s.toString());
-    const rows = tail.map((r) => {
-      const row: Row = {};
-      header.map((h, i) => (row[h] = r[i]));
-      row.Date = this.formatDate(row.Date as string);
-      return row;
-    });
-    return { header, rows };
+    return { header: this.header, rows: this.rows };
   }
 
   private selectAll() {
@@ -287,10 +236,6 @@ export default class DataTable extends Vue {
       style: 'currency',
       currency: 'USD',
     });
-  }
-
-  private formatDate(input: string) {
-    return new Date(input).toLocaleString();
   }
 
   private filter(ev: Event & { currentTarget: HTMLInputElement }) {
