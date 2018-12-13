@@ -1,0 +1,94 @@
+{
+  "name": "Don Denton",
+  "city": "Bettendorf",
+  "state": "IA",
+  "disposition": "cheerful",
+  "traits": ["affable", "empathetic", "social"],
+  "dogs": true,
+  "cats": false,
+  "phone": "i",
+  "hobbies": [
+    "(All of my hobbies turned into occupations. Should I take up woodworking?)"
+  ],
+  "occupations": [
+    [
+      "Software Developer",
+      {
+        "positions": [
+          "Front End Engineer",
+          "Full Stack Developer",
+          "IT Support"
+        ],
+        "companies": ["Flixpress, LLC", "Post Playhouse", "Self/Contract"],
+        "technologies": {
+          "main": [
+            "Typescript",
+            "Javascript",
+            "React",
+            "Angular",
+            "Ember",
+            "Node",
+            "Git",
+            "Github"
+          ],
+          "additional": [
+            "Ruby",
+            "Ruby on Rails",
+            "dotnet",
+            "C#",
+            "PHP",
+            "WordPress"
+          ]
+        }
+      }
+    ],
+    [
+      "Designer",
+      {
+        "positions": ["Asst. Marketing Manager", "Resident Marketing Designer"],
+        "companies": ["Post Playhouse"],
+        "technologies": {
+          "main": ["Illustrator", "Photoshop", "InDesign"],
+          "additional": [
+            "Affinity Designer",
+            "Affinity Publisher",
+            "Pixelmator Pro"
+          ]
+        }
+      }
+    ],
+    [
+      "Performer",
+      {
+        "positions": [
+          "Lead/Principal Actor",
+          "Supporting Actor",
+          "Ensemble Actor",
+          "Musician",
+          "Understudy",
+          "Fight Captain"
+        ],
+        "companies": [
+          "Circa '21",
+          "Kansas City Starlight",
+          "Marriott Theatre",
+          "Drury Lane Oakbrook",
+          "Post Playhouse",
+          "Fourth Wall Films",
+          "Finger on the Trigger (Chicago band)",
+          "(many others)"
+        ],
+        "technologies": {
+          "main": ["Stage Acting", "Singing", "Guitar"],
+          "additional": [
+            "Voice Acting",
+            "Stage Combat",
+            "Djembe",
+            "Dancing",
+            "Film Acting"
+          ]
+        }
+      }
+    ]
+  ]
+}
